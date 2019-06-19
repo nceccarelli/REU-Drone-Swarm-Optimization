@@ -55,6 +55,11 @@ best_fitness = (0, -1)
 #Format: decimal (1 = 100% coverage)
 min_coverage = 1
 
+#slightly different calculations are used if 100% coverage is needed
+total_coverage_check = False
+if (min_coverage == 1):
+    total_coverage_check = True
+
 #number of drones in each member of the population, starts at 1 unless changed
 num_drones = 1
 
@@ -62,7 +67,7 @@ num_drones = 1
 pop_size = 500
 
 #split ensures sum of 2 sections = whole pop_size on odd numbers
-inherit_between_runs = int(pop_size/4)
+inherit_between_runs = int(pop_size/3)
 remainder_of_pop = pop_size - inherit_between_runs
 
 #total number of users in the network (set by loop below)
@@ -248,8 +253,13 @@ def fitness():
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
                 if (dist <= coverage_radius and (hot_spot not in cluster_exclusion_list)):
                     cluster_exclusion_list.append(hot_spot)
-                    for _ in range(get_mult(hot_spot)):
+
+                    if (total_coverage_check):
                         adj_population.append(proposed_map)
+                    else:
+                        for _ in range(get_mult(hot_spot)):
+                            adj_population.append(proposed_map)
+                    
                     score += get_mult(hot_spot)
         index += 1
         if (score >= get_best_score(best_fitness)):
@@ -323,7 +333,7 @@ while(get_best_score(best_fitness) < optimal_fitness):
     fit = fitness()
     #makes calculation time a function of these 2 variables
     #allows for more iterations for harder solutions
-    calc_limit = int(num_drones * len(map_density_list)) /2
+    calc_limit = int(num_drones * len(map_density_list) /3)
     while(get_best_score(best_fitness) < optimal_fitness and same_fitness_count < calc_limit):
         prev_fitness = get_best_score(best_fitness)
         draw(fit)
@@ -336,14 +346,16 @@ while(get_best_score(best_fitness) < optimal_fitness):
         illustrate_intermediate()
     num_drones += 1
     intermediate = True
+
+#for testing
+print('The algorithm took', time.time()-start_time, 'seconds.')
 illustrate_final()
 
 
 # In[231]:
 
 
-#for testing
-print('The algorithm took', time.time()-start_time, 'seconds.')
+
 
 
 # In[232]:
