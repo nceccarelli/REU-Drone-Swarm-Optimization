@@ -1,8 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding: utf-8
-
-# In[222]:
-
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,13 +8,10 @@ from matplotlib.patches import Polygon, Circle
 from matplotlib.collections import PatchCollection
 from shapely.geometry import Point as ShapelyPoint
 from shapely.geometry.polygon import Polygon as ShapelyPolygon
+import sys
 
 #for testing
 import time
-
-
-# In[223]:
-
 
 #The functions below make it easier to understand what information is being retrieved later in the code
 #defines the value to use for max() to get third entity
@@ -35,9 +29,6 @@ def get_best_score(ent):
 #defines the value for the index at which the best drone layout is stored in population
 def get_best_index(ent):
     return ent[1]
-
-
-# In[224]:
 
 
 #GLOBAL VARIABLES
@@ -75,11 +66,8 @@ tot_users = 0
 
 #list of "hot spots" 
 #format: (x coordinate, y coordinate, multiplicity - number of users at that location)
-map_density_list = np.array([(100,100,5), (400, 400, 1),  
-                             (0, 400, 10), (400, 0, 3), (1000, 1000, 5), (0, 800, 1), 
-                             (800, 0, 1), (100, 0, 8), (1000, 300, 4), (400, 800, 10), 
-                             (600, 550, 3), (900, 0, 9), (150,150,1), (650, 650, 1), 
-                             (700, 700, 10), (690, 80, 15), (750, 100, 5), (50, 50, 5), (1000,400, 10)])
+map_density_list = np.array([(250,250,10), (600,600,5), (600,200,15), (200,500,10), (200,100,5), (300,800,10), (800,800,10), 
+(500,400,10), (600,0,10), (800,500,10), (400,300,10), (600,300,10), (700,300,5), (200,600,5), (900,900,15), (400,500,10)])
 for (_,_,u) in map_density_list:
     tot_users += u
 
@@ -88,7 +76,7 @@ optimal_fitness = tot_users * min_coverage
 
 #list of vertices in the polygon (in order of drawing)
 #also calculates the minimum and maximum x and y values for the polygon
-map_vertex_list = np.array([(0,0), (0, 1000), (1000,1000),(1000,0)])
+map_vertex_list = np.array([(0,0), (250, 1000), (500, 750), (1000,1000), (750, 0)])
 xmin = get_x(min(map_vertex_list, key=get_x))
 xmax = get_x(max(map_vertex_list, key=get_x))
 ymin = get_y(min(map_vertex_list, key=get_y))
@@ -102,16 +90,8 @@ mutation_rate = 0.01
 map_poly = Polygon(map_vertex_list, True)
 shapely_poly = ShapelyPolygon(map_vertex_list)
 
-
-print("Minimum Coverage: " + str(min_coverage * 100) + "%")
-print("Number of drones in swarm: " + str(num_drones))
-print("Population size for genetic algorithm: " + str(pop_size))
-print("Total users in this map: " + str(tot_users))
-print("Optimal fitness: " + str(optimal_fitness))
-print("Mutation rate for genetic algorithm: " + str(mutation_rate * 100) + "%")
-
-
-# In[225]:
+print("Minimum Coverage:", str(min_coverage * 100) + "%")
+print("Total users in this map:", str(tot_users))
 
 
 #The section below calculates the height and coverage radius of the network module on the drone
@@ -133,11 +113,8 @@ height = wavelength / (4 * np.pi * 10**((power_reciever_dBm -
 coverage_radius = int(height * np.tan(theta))
 height = int(height)
 
-print("Height: " + str(height) + " meters")
-print("Coverage Radius: " + str(coverage_radius) + " meters")
-
-
-# In[226]:
+print("Height:", str(height), "meters")
+print("Coverage Radius:", str(coverage_radius), "meters")
 
 
 #checks if a point is within the map polygon
@@ -145,9 +122,6 @@ print("Coverage Radius: " + str(coverage_radius) + " meters")
 def polygon_contains_point(point):
     point_to_check = ShapelyPoint(get_x(point), get_y(point))
     return shapely_poly.contains(point_to_check)
-
-
-# In[227]:
 
 
 #draws appropriate map - make more flexible with different polygons
@@ -171,9 +145,9 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
         plt.scatter(get_x(coord),get_y(coord),c='b')
     
     for (x, y, m) in map_density_list:
-        if (m/max_mult) <= (1/3):
+        if (m/max_mult <= 1/3):
             plt.scatter(x, y, c='g')
-        elif (m/max_mult) <= (2/3):
+        elif (m/max_mult <= 2/3):
             plt.scatter(x, y, c='y')
         else:
             plt.scatter(x, y, c='r')
@@ -183,10 +157,7 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
     plt.axis('scaled')
     plt.show()
     
-draw_map(map_vertex_list, map_density_list, drone_list)
-
-
-# In[228]:
+#draw_map(map_vertex_list, map_density_list, drone_list)
 
 
 #GA SETUP
@@ -230,9 +201,6 @@ def setup_intermediate():
 
         population.append(temp_pop)
     np.random.shuffle(population)
-
-
-# In[229]:
 
 
 #GA DRAW functions
@@ -279,6 +247,8 @@ def draw(adj_population):
             rand2 = np.random.randint(0, len(adj_population))
             
             if (mutation_check == 1/mutation_rate):
+                sys.stdout.write('..')
+                sys.stdout.flush()
                 mut_rand = np.random.randint(0,2)
                 if (mut_rand == 0):
                     add_to_pop.append((np.random.randint(xmin, xmax), get_y(adj_population[rand2][m])))
@@ -306,14 +276,12 @@ def illustrate_final():
 def illustrate_intermediate():
     global best_fitness, num_drones
     if (num_drones == 1):
-        print(str(num_drones) + " drone failed | Best fitness: " + str(get_best_score(best_fitness)) + 
-              " \nContinuing with " + str(num_drones+1) + " drones")
+        print("\n" + str(num_drones), "drone failed | Best fitness:", str(get_best_score(best_fitness)),
+              "\n\nContinuing with", str(num_drones+1), "drones")
     else:
-        print(str(num_drones) + " drones failed | Best fitness: " + str(get_best_score(best_fitness)) + 
-              "\nContinuing with " + str(num_drones+1) + " drones")
+        print("\n" + str(num_drones), "drones failed | Best fitness:", str(get_best_score(best_fitness)),
+              "\n\nContinuing with", str(num_drones+1), "drones")
 
-
-# In[230]:
 
 
 #loop for GA
@@ -333,7 +301,7 @@ while(get_best_score(best_fitness) < optimal_fitness):
     fit = fitness()
     #makes calculation time a function of these 2 variables
     #allows for more iterations for harder solutions
-    calc_limit = int(num_drones * len(map_density_list) /3)
+    calc_limit = int(num_drones * len(map_density_list) /2)
     while(get_best_score(best_fitness) < optimal_fitness and same_fitness_count < calc_limit):
         prev_fitness = get_best_score(best_fitness)
         draw(fit)
@@ -348,21 +316,5 @@ while(get_best_score(best_fitness) < optimal_fitness):
     intermediate = True
 
 #for testing
-print('The algorithm took', time.time()-start_time, 'seconds.')
+print('\nThe algorithm took', time.time()-start_time, 'seconds.')
 illustrate_final()
-
-
-# In[ ]:
-
-
-#OLD loop for GA
-# fit = fitness()
-# it = 0
-# while(get_best_score(best_fitness) < optimal_fitness):
-#     draw(fit)
-#     print("Best score: " + str(get_best_score(best_fitness)) + " | Proposed Map: " + str(population[get_best_index(best_fitness)]))
-#     fit = fitness()
-#     it += 1
-# print("Best score: " + str(get_best_score(best_fitness)) + " | Proposed Map: " + str(population[get_best_index(best_fitness)]))
-# print("total generations: " + str(it))
-
