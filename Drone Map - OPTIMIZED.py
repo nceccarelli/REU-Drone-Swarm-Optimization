@@ -75,7 +75,7 @@ tot_users = 0
 
 #list of "hot spots" 
 #format: (x coordinate, y coordinate, multiplicity - number of users at that location)
-map_density_list = np.array([(100,100,5), (400, 400, 1), (500, 1750, 6), (1500, 1500, 25), 
+map_density_list = np.array([(100,100,5), (400, 400, 1),  
                              (0, 400, 10), (400, 0, 3), (1000, 1000, 5), (0, 800, 1), 
                              (800, 0, 1), (100, 0, 8), (1000, 300, 4), (400, 800, 10), 
                              (600, 550, 3), (900, 0, 9), (150,150,1), (650, 650, 1), 
@@ -88,7 +88,7 @@ optimal_fitness = tot_users * min_coverage
 
 #list of vertices in the polygon (in order of drawing)
 #also calculates the minimum and maximum x and y values for the polygon
-map_vertex_list = np.array([(0,0), (0, 2000), (2000,2000),(2000,0)])
+map_vertex_list = np.array([(0,0), (0, 1000), (1000,1000),(1000,0)])
 xmin = get_x(min(map_vertex_list, key=get_x))
 xmax = get_x(max(map_vertex_list, key=get_x))
 ymin = get_y(min(map_vertex_list, key=get_y))
@@ -350,18 +350,6 @@ while(get_best_score(best_fitness) < optimal_fitness):
 #for testing
 print('The algorithm took', time.time()-start_time, 'seconds.')
 illustrate_final()
-
-
-# In[231]:
-
-
-
-
-
-# In[232]:
-
-
-#old code:
 
 
 # In[ ]:
