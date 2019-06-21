@@ -13,8 +13,10 @@ import sys
 #for testing
 import time
 
-#The functions below make it easier to understand what information is being retrieved later in the code
-#defines the value to use for max() to get third entity
+"""
+The functions below make it easier to understand what information is being retrieved later in the code 
+    Defines the value to use for max() to get third entity
+"""
 def get_mult(ent):
     return ent[2]
 #defines the value to use for max() to get second entity
@@ -30,8 +32,9 @@ def get_best_score(ent):
 def get_best_index(ent):
     return ent[1]
 
-
-#GLOBAL VARIABLES
+"""
+GLOBAL VARIABLES
+"""
 
 #stores the popultation - global variable so it can be accessed inside and outside functions
 population = []
@@ -42,8 +45,10 @@ drone_list = []
 #stores the best score currently in the population and the index at which the layout with the best score is located
 best_fitness = (0, -1)
 
-#Minimum coverage needed to be provided by the algorithm
-#Format: decimal (1 = 100% coverage)
+"""
+Minimum coverage needed to be provided by the algorithm
+    Format: decimal (1 = 100% coverage)
+"""
 min_coverage = 1
 
 #slightly different calculations are used if 100% coverage is needed
@@ -64,26 +69,32 @@ remainder_of_pop = pop_size - inherit_between_runs
 #total number of users in the network (set by loop below)
 tot_users = 0
 
-#list of "hot spots" 
-#format: (x coordinate, y coordinate, multiplicity - number of users at that location)
+"""
+list of "hot spots" 
+    Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
+"""
 map_density_list = np.array([(250,250,10), (600,600,5), (600,200,15), (200,500,10), (200,100,5), (300,800,10), (800,800,10), 
-(500,400,10), (600,0,10), (800,500,10), (400,300,10), (600,300,10), (700,300,5), (200,600,5), (900,900,15), (400,500,10)])
+(500,400,10), (600,0,10), (800,500,10), (400,300,10), (600,300,10), (700,300,5), (200,600,5), (500,700,10), (400,0,10)])
 for (_,_,u) in map_density_list:
     tot_users += u
 
 #fitness to strive for with GA
 optimal_fitness = tot_users * min_coverage
 
-#list of vertices in the polygon (in order of drawing)
-#also calculates the minimum and maximum x and y values for the polygon
+"""
+List of vertices in the polygon (in order of drawing)
+    Also calculates the minimum and maximum x and y values for the polygon
+"""
 map_vertex_list = np.array([(0,0), (250, 1000), (500, 750), (1000,1000), (750, 0)])
 xmin = get_x(min(map_vertex_list, key=get_x))
 xmax = get_x(max(map_vertex_list, key=get_x))
 ymin = get_y(min(map_vertex_list, key=get_y))
 ymax = get_y(max(map_vertex_list, key=get_y))
 
-#mutation rate for GA
-#Format: decimal (1 = 100% (complete randomness))
+"""
+Mutation rate for GA
+    Format: decimal (1 = 100% (complete randomness))
+"""
 mutation_rate = 0.01
 
 #Creates two polygon objects used for later calculations
@@ -93,8 +104,10 @@ shapely_poly = ShapelyPolygon(map_vertex_list)
 print("Minimum Coverage:", str(min_coverage * 100) + "%")
 print("Total users in this map:", str(tot_users))
 
+"""
+The section below calculates the height and coverage radius of the network module on the drone
+"""
 
-#The section below calculates the height and coverage radius of the network module on the drone
 #Parameters for the caclulation:
 wavelength = 0.125
 directivity_transmitter_dBi = 14
@@ -116,9 +129,10 @@ height = int(height)
 print("Height:", str(height), "meters")
 print("Coverage Radius:", str(coverage_radius), "meters")
 
-
-#checks if a point is within the map polygon
-#returns boolean: true or false
+"""
+checks if a point is within the map polygon
+    returns boolean: true or false
+"""
 def polygon_contains_point(point):
     point_to_check = ShapelyPoint(get_x(point), get_y(point))
     return shapely_poly.contains(point_to_check)
@@ -130,7 +144,6 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
     patches = [map_poly]
     
     max_mult = get_mult(max(map_density_list, key=get_mult))
-    #the following only runs after the computation has taken place and the drone positions have been calculated
     #handle drone selection circles
     for coord in drone_list:
 
@@ -157,10 +170,12 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
     plt.axis('scaled')
     plt.show()
     
+#    
 #draw_map(map_vertex_list, map_density_list, drone_list)
 
-
-#GA SETUP
+"""
+GA SETUP
+"""
 
 #fills population with pop_size random but appropriate entries
 for _ in range(pop_size):
@@ -202,11 +217,13 @@ def setup_intermediate():
         population.append(temp_pop)
     np.random.shuffle(population)
 
-
-#GA DRAW functions
-
-#append the fitness to every proposed map in population
-    #fitness is defined as the number of users covered under a given map
+"""
+GA DRAW functions
+"""
+"""
+append the fitness to every proposed map in population
+    fitness is defined as the number of users covered under a given map
+"""
 def fitness():
     global best_fitness, population
     adj_population = []
@@ -234,8 +251,10 @@ def fitness():
             best_fitness = (score, index)
     return adj_population
 
-#Computes the next generation for the GA
-#also handles mutation
+"""
+Computes the next generation for the GA
+also handles mutation
+"""
 def draw(adj_population):
     global population
     population = []
@@ -247,7 +266,7 @@ def draw(adj_population):
             rand2 = np.random.randint(0, len(adj_population))
             
             if (mutation_check == 1/mutation_rate):
-                sys.stdout.write('..')
+                sys.stdout.write('.')
                 sys.stdout.flush()
                 mut_rand = np.random.randint(0,2)
                 if (mut_rand == 0):
@@ -268,7 +287,10 @@ def illustrate_final():
     list_ = [list(elem) for elem in population[get_best_index(best_fitness)]]
     for tup in list_:
         tup.append(height)
-    print("\nBest fitness: " + str(get_best_score(best_fitness)) + " \nProposed Map: " + str(list_))
+    print("\nBest fitness: " + str(get_best_score(best_fitness)) + " \nProposed Map: ")
+
+    for tup in list_:
+        print("(" + str(tup[0]) + "," + str(tup[1]) + "," + str(tup[2]) + ")")
     #illustrate solution
     draw_map(map_vertex_list, map_density_list, drone_list)
 
@@ -283,11 +305,14 @@ def illustrate_intermediate():
               "\n\nContinuing with", str(num_drones+1), "drones")
 
 
+"""
+loop for GA
+"""
 
-#loop for GA
-
-#optimize: instead of max iterations, use for how many generations the fitness stays the same 
-#(score stays the same for 50 iterations, move on)
+"""
+optimize: instead of max iterations, use for how many generations the fitness stays the same 
+    if score stays the same for 50 iterations, move on
+"""
 
 #for testing
 start_time = time.time()
