@@ -8,7 +8,7 @@ from matplotlib.patches import Polygon, Circle
 from matplotlib.collections import PatchCollection
 from shapely.geometry import Point as ShapelyPoint
 from shapely.geometry.polygon import Polygon as ShapelyPolygon
-import sys
+#import sys
 
 #for testing
 import time
@@ -96,14 +96,14 @@ ymax = get_y(max(map_vertex_list, key=get_y))
 Mutation rate for GA
     Format: decimal (1 = 100% (complete randomness))
 """
-mutation_rate = 0.01
+mutation_rate = 0.1
 
 #Creates two polygon objects used for later calculations
 map_poly = Polygon(map_vertex_list, True)
 shapely_poly = ShapelyPolygon(map_vertex_list)
 
-print("Minimum Coverage:", str(min_coverage * 100) + "%")
-print("Total users in this map:", str(tot_users))
+#print("Minimum Coverage:", str(min_coverage * 100) + "%")
+#print("Total users in this map:", str(tot_users))
 
 """
 The section below calculates the height and coverage radius of the network module on the drone
@@ -127,8 +127,8 @@ height = wavelength / (4 * np.pi * 10**((power_reciever_dBm -
 coverage_radius = int(height * np.tan(theta))
 height = int(height)
 
-print("Height:", str(height), "meters")
-print("Coverage Radius:", str(coverage_radius), "meters")
+#print("Height:", str(height), "meters")
+#print("Coverage Radius:", str(coverage_radius), "meters")
 
 """
 checks if a point is within the map polygon
@@ -267,8 +267,8 @@ def draw(adj_population):
             rand2 = np.random.randint(0, len(adj_population))
             
             if (mutation_check == 1/mutation_rate):
-                sys.stdout.write('.')
-                sys.stdout.flush()
+                #sys.stdout.write('.')
+                #sys.stdout.flush()
                 mut_rand = np.random.randint(0,2)
                 if (mut_rand == 0):
                     add_to_pop.append((np.random.randint(xmin, xmax), get_y(adj_population[rand2][m])))
@@ -336,11 +336,12 @@ while(get_best_score(best_fitness) < optimal_fitness):
             same_fitness_count += 1
         else:
             same_fitness_score = 0
-    if (get_best_score(best_fitness) < optimal_fitness):
-        illustrate_intermediate()
+    #if (get_best_score(best_fitness) < optimal_fitness):
+        #illustrate_intermediate()
     num_drones += 1
     intermediate = True
 
 #for testing
 print('\nThe algorithm took', time.time()-start_time, 'seconds.')
-illustrate_final()
+print(num_drones-1)
+#illustrate_final()
