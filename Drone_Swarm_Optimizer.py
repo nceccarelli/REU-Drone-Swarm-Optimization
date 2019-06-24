@@ -60,10 +60,10 @@ if (min_coverage == 1):
 num_drones = 1
 
 #population size for GA
-pop_size = 500
+pop_size = 400
 
 #split ensures sum of 2 sections = whole pop_size on odd numbers
-inherit_between_runs = int(pop_size/3)
+inherit_between_runs = int(pop_size/2)
 remainder_of_pop = pop_size - inherit_between_runs
 
 #total number of users in the network (set by loop below)
@@ -327,7 +327,7 @@ while(get_best_score(best_fitness) < optimal_fitness):
     fit = fitness()
     #makes calculation time a function of these 2 variables
     #allows for more iterations for harder solutions
-    calc_limit = int(num_drones * len(map_density_list) /3)
+    calc_limit = int(num_drones * len(map_density_list) /2)
     while(get_best_score(best_fitness) < optimal_fitness and same_fitness_count < calc_limit):
         prev_fitness = get_best_score(best_fitness)
         draw(fit)
