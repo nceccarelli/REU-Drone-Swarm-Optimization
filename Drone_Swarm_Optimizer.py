@@ -128,6 +128,8 @@ height = wavelength / (4 * np.pi * 10**((power_reciever_dBm -
 coverage_radius = int(height * np.tan(theta))
 height = int(height)
 
+max_users_per_drone = 1000
+
 print("Height:", str(height), "meters")
 print("Coverage Radius:", str(coverage_radius), "meters")
 
@@ -238,8 +240,8 @@ def fitness():
             for (x, y, m) in map_density_list:
                 hot_spot = (x, y, m)
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
-                if (dist <= coverage_radius and (hot_spot not in cluster_exclusion_list)):
-                    cluster_exclusion_list.append(hot_spot)
+                if ((dist <= coverage_radius) and (hot_spot not in cluster_exclusion_list)):
+                    
 
                     if (total_coverage_check):
                         adj_population.append(proposed_map)
@@ -247,7 +249,10 @@ def fitness():
                         for _ in range(get_mult(hot_spot)):
                             adj_population.append(proposed_map)
                     
-                    score += get_mult(hot_spot)
+                    if (score + get_mult(hot_spot) <= max_users_per_drone):
+                        cluster_exclusion_list.append(hot_spot)
+                        score += get_mult(hot_spot)
+                    
         index += 1
         if (score >= get_best_score(best_fitness)):
             best_fitness = (score, index)
@@ -300,10 +305,10 @@ def illustrate_final():
 def illustrate_intermediate():
     global best_fitness, num_drones
     if (num_drones == 1):
-        print("\n" + str(num_drones), "drone failed | Best fitness:", str(get_best_score(best_fitness)),
+        print("\n" + str(num_drones), "drone failed | Best fitness:", str(get_best_score(best_fitness)/optimal_fitness * 100), '%',
               "\n\nContinuing with", str(num_drones+1), "drones")
     else:
-        print("\n" + str(num_drones), "drones failed | Best fitness:", str(get_best_score(best_fitness)),
+        print("\n" + str(num_drones), "drones failed | Best fitness:", str(get_best_score(best_fitness)/optimal_fitness * 100), '%',
               "\n\nContinuing with", str(num_drones+1), "drones")
 
 
