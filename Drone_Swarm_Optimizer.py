@@ -127,7 +127,7 @@ coverage_radius = int(height * np.tan(theta))
 height = int(height)
 
 #Maximum number of users a single UAV can support at a time
-max_users_per_drone = 1000
+max_users_per_drone = 250
 
 print("Height:", str(height), "meters")
 print("Coverage Radius:", str(coverage_radius), "meters")
