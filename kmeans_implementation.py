@@ -78,12 +78,16 @@ X = np.array([(200,100), (250,250), (400,300), (200,500), (400,500), (200,600),
 kmeans = KMeans(n_clusters=7)
 kmeans.fit(X)
 
-for center in kmeans.cluster_centers_:
-    for cluster in map_density_list:
+for cluster in map_density_list:
+    mini = 50000
+    for center in kmeans.cluster_centers_:
         dist = np.sqrt((get_x(center)-get_x(cluster))**2 + (get_y(center)-get_y(cluster))**2)
-        if (dist > coverage_radius):
-            sys.exit()
+        if (dist < mini):
+            mini = dist
+    if (mini > coverage_radius):
+        sys.exit()
+
 
 #print(kmeans.cluster_centers_)
-#draw_map(map_vertex_list, map_density_list ,kmeans.cluster_centers_)
+#draw_map(map_vertex_list, map_density_list, kmeans.cluster_centers_)
 print("success")

@@ -1,0 +1,8 @@
+bash prompts:
+
+run kmeans (100x) and print numbers
+for i in {0..100}; do python3 kmeans_implementation.py; echo $i; done;
+
+run kmeans (100x)
+for i in {0..100}; do python3 kmeans_implementation.py; done;
+
