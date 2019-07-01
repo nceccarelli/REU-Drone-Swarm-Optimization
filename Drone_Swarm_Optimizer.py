@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib
-from matplotlib.patches import Polygon, Circle
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.collections import PatchCollection
+from matplotlib.patches import Circle, Polygon
 from shapely.geometry import Point as ShapelyPoint
 from shapely.geometry.polygon import Polygon as ShapelyPolygon
 import sys
@@ -103,9 +103,9 @@ mutation_rate = 0.01
 map_poly = Polygon(map_vertex_list, True)
 shapely_poly = ShapelyPolygon(map_vertex_list)
 
+print("Algorithm Calculation Beginning")
 print("Minimum Coverage:", str(min_coverage * 100) + "%")
 print("Total users in this map:", str(tot_users))
-
 """
 The section below calculates the height and coverage radius of the network module on the drone
 """
@@ -128,6 +128,7 @@ height = wavelength / (4 * np.pi * 10**((power_reciever_dBm -
 coverage_radius = int(height * np.tan(theta))
 height = int(height)
 
+#Maximum number of users a single UAV can support at a time
 max_users_per_drone = 1000
 
 print("Height:", str(height), "meters")
@@ -236,22 +237,24 @@ def fitness():
         score = 0
         cluster_exclusion_list = []
         for drone in proposed_map:
+        
 
+            users_per_drone = 0
             for (x, y, m) in map_density_list:
                 hot_spot = (x, y, m)
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
                 if ((dist <= coverage_radius) and (hot_spot not in cluster_exclusion_list)):
                     
-
                     if (total_coverage_check):
                         adj_population.append(proposed_map)
                     else:
                         for _ in range(get_mult(hot_spot)):
                             adj_population.append(proposed_map)
                     
-                    if (score + get_mult(hot_spot) <= max_users_per_drone):
+                    if (users_per_drone + get_mult(hot_spot) <= max_users_per_drone):
                         cluster_exclusion_list.append(hot_spot)
                         score += get_mult(hot_spot)
+                        users_per_drone += get_mult(hot_spot)
                     
         index += 1
         if (score >= get_best_score(best_fitness)):

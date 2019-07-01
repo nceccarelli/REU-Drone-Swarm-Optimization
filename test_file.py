@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib
-from matplotlib.patches import Polygon, Circle
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.collections import PatchCollection
+from matplotlib.patches import Circle, Polygon
 from shapely.geometry import Point as ShapelyPoint
 from shapely.geometry.polygon import Polygon as ShapelyPolygon
-#import sys
+import sys
 
 #for testing
 import time
@@ -73,6 +73,7 @@ tot_users = 0
 list of "hot spots" 
     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
 """
+
 map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,10), (400,500,10), (200,600,5), 
 (300,800,10), (600,200,15), (700,300,5), (600,300,10), (500,400,10), (800,500,10), (600,600,5), (800,800,10), 
 (300,700,15), (700,400,15), (500,100,15), (700,700,5), (300,350,5), (100,100,15), (600,100,5)])
@@ -102,9 +103,6 @@ mutation_rate = 0.01
 map_poly = Polygon(map_vertex_list, True)
 shapely_poly = ShapelyPolygon(map_vertex_list)
 
-#print("Minimum Coverage:", str(min_coverage * 100) + "%")
-#print("Total users in this map:", str(tot_users))
-
 """
 The section below calculates the height and coverage radius of the network module on the drone
 """
@@ -127,8 +125,8 @@ height = wavelength / (4 * np.pi * 10**((power_reciever_dBm -
 coverage_radius = int(height * np.tan(theta))
 height = int(height)
 
-#print("Height:", str(height), "meters")
-#print("Coverage Radius:", str(coverage_radius), "meters")
+#Maximum number of users a single UAV can support at a time
+max_users_per_drone = 1000
 
 """
 checks if a point is within the map polygon
@@ -233,20 +231,25 @@ def fitness():
         score = 0
         cluster_exclusion_list = []
         for drone in proposed_map:
+        
 
+            users_per_drone = 0
             for (x, y, m) in map_density_list:
                 hot_spot = (x, y, m)
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
-                if (dist <= coverage_radius and (hot_spot not in cluster_exclusion_list)):
-                    cluster_exclusion_list.append(hot_spot)
-
+                if ((dist <= coverage_radius) and (hot_spot not in cluster_exclusion_list)):
+                    
                     if (total_coverage_check):
                         adj_population.append(proposed_map)
                     else:
                         for _ in range(get_mult(hot_spot)):
                             adj_population.append(proposed_map)
                     
-                    score += get_mult(hot_spot)
+                    if (users_per_drone + get_mult(hot_spot) <= max_users_per_drone):
+                        cluster_exclusion_list.append(hot_spot)
+                        score += get_mult(hot_spot)
+                        users_per_drone += get_mult(hot_spot)
+                    
         index += 1
         if (score >= get_best_score(best_fitness)):
             best_fitness = (score, index)
@@ -267,8 +270,8 @@ def draw(adj_population):
             rand2 = np.random.randint(0, len(adj_population))
             
             if (mutation_check == 1/mutation_rate):
-                #sys.stdout.write('.')
-                #sys.stdout.flush()
+                # sys.stdout.write('.')
+                # sys.stdout.flush()
                 mut_rand = np.random.randint(0,2)
                 if (mut_rand == 0):
                     add_to_pop.append((np.random.randint(xmin, xmax), get_y(adj_population[rand2][m])))
@@ -299,10 +302,10 @@ def illustrate_final():
 def illustrate_intermediate():
     global best_fitness, num_drones
     if (num_drones == 1):
-        print("\n" + str(num_drones), "drone failed | Best fitness:", str(get_best_score(best_fitness)),
+        print("\n" + str(num_drones), "drone failed | Best fitness:", str(get_best_score(best_fitness)/optimal_fitness * 100), '%',
               "\n\nContinuing with", str(num_drones+1), "drones")
     else:
-        print("\n" + str(num_drones), "drones failed | Best fitness:", str(get_best_score(best_fitness)),
+        print("\n" + str(num_drones), "drones failed | Best fitness:", str(get_best_score(best_fitness)/optimal_fitness * 100), '%',
               "\n\nContinuing with", str(num_drones+1), "drones")
 
 
@@ -343,5 +346,4 @@ while(get_best_score(best_fitness) < optimal_fitness):
 
 #for testing
 print('\nThe algorithm took', time.time()-start_time, 'seconds.')
-print(num_drones-1)
-#illustrate_final()
+illustrate_final()
