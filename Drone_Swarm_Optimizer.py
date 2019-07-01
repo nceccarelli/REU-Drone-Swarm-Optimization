@@ -13,10 +13,10 @@ import sys
 #for testing
 import time
 
-"""
-The functions below make it easier to understand what information is being retrieved later in the code 
-    Defines the value to use for max() to get third entity
-"""
+
+# The functions below make it easier to understand what information is being retrieved later in the code 
+#     Defines the value to use for max() to get third entity
+
 def get_mult(ent):
     return ent[2]
 #defines the value to use for max() to get second entity
@@ -35,7 +35,6 @@ def get_best_index(ent):
 """
 GLOBAL VARIABLES
 """
-
 #stores the popultation - global variable so it can be accessed inside and outside functions
 population = []
 
@@ -45,10 +44,10 @@ drone_list = []
 #stores the best score currently in the population and the index at which the layout with the best score is located
 best_fitness = (0, -1)
 
-"""
-Minimum coverage needed to be provided by the algorithm
-    Format: decimal (1 = 100% coverage)
-"""
+
+# Minimum coverage needed to be provided by the algorithm
+#     Format: decimal (1 = 100% coverage)
+
 min_coverage = 1
 
 #slightly different calculations are used if 100% coverage is needed
@@ -69,10 +68,9 @@ remainder_of_pop = pop_size - inherit_between_runs
 #total number of users in the network (set by loop below)
 tot_users = 0
 
-"""
-list of "hot spots" 
-    Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
-"""
+
+# list of "hot spots" 
+#     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
 
 map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,10), (400,500,10), (200,600,5), 
 (300,800,10), (600,200,15), (700,300,5), (600,300,10), (500,400,10), (800,500,10), (600,600,5), (800,800,10), 
@@ -83,20 +81,20 @@ for (_,_,u) in map_density_list:
 #fitness to strive for with GA
 optimal_fitness = tot_users * min_coverage
 
-"""
-List of vertices in the polygon (in order of drawing)
-    Also calculates the minimum and maximum x and y values for the polygon
-"""
+
+# List of vertices in the polygon (in order of drawing)
+#     Also calculates the minimum and maximum x and y values for the polygon
+
 map_vertex_list = np.array([(0,0), (250, 1000), (500, 750), (1000,1000), (750, 0)])
 xmin = get_x(min(map_vertex_list, key=get_x))
 xmax = get_x(max(map_vertex_list, key=get_x))
 ymin = get_y(min(map_vertex_list, key=get_y))
 ymax = get_y(max(map_vertex_list, key=get_y))
 
-"""
-Mutation rate for GA
-    Format: decimal (1 = 100% (complete randomness))
-"""
+
+# Mutation rate for GA
+#     Format: decimal (1 = 100% (complete randomness))
+
 mutation_rate = 0.01
 
 #Creates two polygon objects used for later calculations
@@ -106,10 +104,10 @@ shapely_poly = ShapelyPolygon(map_vertex_list)
 print("Algorithm Calculation Beginning")
 print("Minimum Coverage:", str(min_coverage * 100) + "%")
 print("Total users in this map:", str(tot_users))
+
 """
 The section below calculates the height and coverage radius of the network module on the drone
 """
-
 #Parameters for the caclulation:
 wavelength = 0.125
 directivity_transmitter_dBi = 14
@@ -134,10 +132,10 @@ max_users_per_drone = 1000
 print("Height:", str(height), "meters")
 print("Coverage Radius:", str(coverage_radius), "meters")
 
-"""
-checks if a point is within the map polygon
-    returns boolean: true or false
-"""
+
+# checks if a point is within the map polygon
+#     returns boolean: true or false
+
 def polygon_contains_point(point):
     point_to_check = ShapelyPoint(get_x(point), get_y(point))
     return shapely_poly.contains(point_to_check)
@@ -177,11 +175,9 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
     
 #    
 #draw_map(map_vertex_list, map_density_list, drone_list)
-
 """
 GA SETUP
 """
-
 #fills population with pop_size random but appropriate entries
 for _ in range(pop_size):
     temp_pop = []
@@ -223,12 +219,12 @@ def setup_intermediate():
     np.random.shuffle(population)
 
 """
-GA DRAW functions
+ GA functions
 """
-"""
-append the fitness to every proposed map in population
-    fitness is defined as the number of users covered under a given map
-"""
+
+# append the fitness to every proposed map in population
+#     fitness is defined as the number of users covered under a given map
+
 def fitness():
     global best_fitness, population
     adj_population = []
@@ -261,10 +257,10 @@ def fitness():
             best_fitness = (score, index)
     return adj_population
 
-"""
-Computes the next generation for the GA
-also handles mutation
-"""
+
+# Computes the next generation for the GA
+#     also handles mutation
+
 def draw(adj_population):
     global population
     population = []
@@ -316,13 +312,12 @@ def illustrate_intermediate():
 
 
 """
-loop for GA
+Control loop for GA
 """
 
-"""
-optimize: instead of max iterations, use for how many generations the fitness stays the same 
-    if score stays the same for 50 iterations, move on
-"""
+# optimize: instead of max iterations, use for how many generations the fitness stays the same 
+#     if score stays the same for 50 iterations, move on
+
 
 #for testing
 start_time = time.time()
