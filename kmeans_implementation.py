@@ -113,7 +113,7 @@ for cluster in map_density_list:
     if (mini > coverage_radius):
         sys.exit()
 
-
+#Display options
 #print(kmeans.cluster_centers_)
 #draw_map(map_vertex_list, map_density_list, kmeans.cluster_centers_)
 print("success")
