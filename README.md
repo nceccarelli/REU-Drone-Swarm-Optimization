@@ -5,10 +5,10 @@
 Efficient arrangement of UAVs in a swarm formation is essential to the functioning of such a swarm as a temporary communication network. Such a network could assist in search-and-rescue efforts by providing first responders with a means of communication. We propose a solution to creating a user-friendly and effective system for calculating and visualizing an optimal layout of UAVs to cover a minimum percentage of overall users in a given area. The calculation is computed by a genetic algorithm while the visualization outputs the results of the calculation in an easy-to-comprehend manner. An initial calculation to gather parameter information is followed by the algorithm that generates the optimal solution. This algorithm is run iteratively until a solution is found. Information is passed between iterations to reduce runtime and complexity.
 
 An example of a UAV that this algorithm can be run for:
-![Oops!](picture_data/drone_from_side.jpg?raw=true | width=100)
+![Oops!](picture_data/drone_from_side.jpg?raw=true "Example UAV") <!-- .element height="50%" width="50%" -->
 
 This algorithm will output a visual such as this:
-![Oops!](picture_data/ex_soln.png?raw=true | width=100)
+![Oops!](picture_data/ex_soln.png?raw=true "Example Solution") <!-- .element height="50%" width="50%" -->
 
 In this picture, users are representad as green, yellow, and red dots, in order of increasing density. Blue dots represent UAVs with the lighter blue circles around each UAV being the coverage they can provide. The large polygon is the specified coveage polygon.
 
