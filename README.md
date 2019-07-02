@@ -8,7 +8,7 @@ Efficient arrangement of UAVs in a swarm formation is essential to the functioni
 |---------------------------------------------------------|---------------------------------------------------|
 | <img src="picture_data/drone_from_side.jpg" alt="Oops!" width="400"/> | ![Oops!](picture_data/ex_soln.png?raw=true)
 
-In this picture, users are representad as green, yellow, and red dots, in order of increasing density. Blue dots represent UAVs with the lighter blue circles around each UAV being the coverage they can provide. The large polygon is the specified coveage polygon.
+In the picture on the left, users are representad as green, yellow, and red dots, in order of increasing density. Blue dots represent UAVs with the lighter blue circles around each UAV being the coverage they can provide. The large polygon is the specified coveage polygon.
 
 This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ubuntu 18.04.
 
@@ -31,7 +31,7 @@ From here on out, "DIR" will represent the directory in which it is desired for 
 
 To download the software, run the following in a terminal window:  
 
-```python
+```bash
 cd DIR  
 git clone https://github.com/nceccarelli/REU_Drone_Swarm_Optimization.git  
 cd REU_Drone_Swarm_Optimization
@@ -43,14 +43,23 @@ Now the software should be downloaded and opened in the terminal window.
 
 Before use, calculation parameters likely need to be changed. This can be done from within the Python script entitled *Drone_Swarm_Optimizer.py*. To do this, open the file in your favorite IDE or open with vim by running the following in the previous terminal window:
 
-`vim Drone_Swarm_Optimizer.py`
+```bash
+vim Drone_Swarm_Optimizer.py
+```
 
 If vim has not been installed previously, run the following:  
 
 **On Linux:**  
-`sudo apt install vim`  
+
+```bash
+sudo apt install vim
+```  
+
 **On Mac**  
-`brew install vim`  
+
+```bash
+brew install vim
+```  
 
 The following parameters pertaining to the overall algorithm may be changed:
 
@@ -87,6 +96,8 @@ All other global variables should not be changed.
 
 Once all appropriate parameters are changed, the algorithm can be run. To do so, in the previously described terminal window, run the following:
 
-`python3 Drone_Swarm_Optimizer.py`
+```bash
+python3 Drone_Swarm_Optimizer.py
+```
 
 After this line is run, the terminal window will display the progress of the algorithm. Once finished, the script will print coordinates of UAV locations, and an external window will open with a visualization of the UAVs and users in map_density_list within the polygon depicted by map_vertex_list.
