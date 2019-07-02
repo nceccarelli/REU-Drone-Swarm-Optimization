@@ -6,7 +6,7 @@ Efficient arrangement of UAVs in a swarm formation is essential to the functioni
 
 This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ubuntu 18.04.
 
-**Author:** Nicholas Ceccarelli, njceccarelli@gmail.com
+**Author:** Nicholas Ceccarelli, njceccarelli@gmail.com  
 **Affiliation:** SUNY University at Buffalo, *Student*; University of Nevada, Reno, *REU Participant*
 <!-- add pictures and explain how it works -->
 
@@ -14,18 +14,18 @@ This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ub
 
 ### Dependencies
 
-*Python 3.7
-*matplotlib
-*numpy
-*shapely
+* Python 3.7
+* matplotlib
+* numpy
+* shapely
 
 ### Building
 
 From here on out, "DIR" will represent the directory in which it is desired for the package to be installed.
 
-To download the software, run the following in a terminal window:
-`cd DIR
-git clone https://github.com/nceccarelli/REU-Drone-Swarm-Optimization.git
+To download the software, run the following in a terminal window:  
+`cd DIR  
+git clone https://github.com/nceccarelli/REU-Drone-Swarm-Optimization.git  
 cd REU-Drone-Swarm-Optimization`
 
 Now the software should be downloaded and opened in the terminal window.
@@ -37,10 +37,11 @@ Before use, calculation parameters likely need to be changed. This can be done f
 `vim Drone_Swarm_Optimizer.py`
 
 If vim has not been installed previously, run the following:  
+
 **On Linux:**  
-`sudo apt install vim`
+`sudo apt install vim`  
 **On Mac**  
-`brew install vim`
+`brew install vim`  
 
 The following parameters pertaining to the overall algorithm may be changed:
 
@@ -50,6 +51,7 @@ The following parameters pertaining to the overall algorithm may be changed:
 * max_users_per_drone
 
 The following table defines the above parameters:
+
 | Parameter | Definition |
 |-----------|------------|
 | min_coverage | The minimum fraction of users that must be provided network coverage. Reported in the form of a decimal. |
