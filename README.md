@@ -4,8 +4,8 @@
 
 Efficient arrangement of UAVs in a swarm formation is essential to the functioning of such a swarm as a temporary communication network. Such a network could assist in search-and-rescue efforts by providing first responders with a means of communication. We propose a solution to creating a user-friendly and effective system for calculating and visualizing an optimal layout of UAVs to cover a minimum percentage of overall users in a given area. The calculation is computed by a genetic algorithm while the visualization outputs the results of the calculation in an easy-to-comprehend manner. An initial calculation to gather parameter information is followed by the algorithm that generates the optimal solution. This algorithm is run iteratively until a solution is found. Information is passed between iterations to reduce runtime and complexity.
 
-An example of a UAV that this algorithm can be run for: 
-![Alt text](picture_data/drone_from_side?raw=true "Example UAV")
+An example of a UAV that this algorithm can be run for:
+![Alt text](picture_data/drone_from_side.jpg?raw=true "Example UAV")
 
 This algorithm will output a visual such as this:
 ![Alt text](picture_data/ex_soln.png?raw=true "Example Solution")
@@ -15,7 +15,7 @@ In this picture, users are representad as green, yellow, and red dots, in order 
 This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ubuntu 18.04.
 
 **Author:** Nicholas Ceccarelli, njceccarelli@gmail.com  
-**Affiliation:** SUNY University at Buffalo, *Student*; University of Nevada, Reno, *REU Participant*
+**Affiliation:** SUNY University at Buffalo: *Student*; University of Nevada, Reno: *REU Participant*
 <!-- add pictures and explain how it works -->
 
 ## Installation
