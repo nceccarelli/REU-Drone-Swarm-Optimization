@@ -24,20 +24,45 @@ def get_best_score(ent):
 def get_best_index(ent):
     return ent[1]
 
+# List of vertices in the polygon (in order of drawing)
+#     Also calculates the minimum and maximum x and y values for the polygon
 map_vertex_list = np.array([(0,0), (250, 1000), (500, 750), (1000,1000), (750, 0)])
 xmin = get_x(min(map_vertex_list, key=get_x))
 xmax = get_x(max(map_vertex_list, key=get_x))
 ymin = get_y(min(map_vertex_list, key=get_y))
 ymax = get_y(max(map_vertex_list, key=get_y))
 
+# list of "hot spots" 
+#     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
 map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,10), (400,500,10), (200,600,5), 
 (300,800,10), (600,200,15), (700,300,5), (600,300,10), (500,400,10), (800,500,10), (600,600,5), (800,800,10), 
 (300,700,15), (700,400,15), (500,100,15), (700,700,5), (300,350,5), (100,100,15), (600,100,5)])
 
+#Creates a polygon object used for later calculations
 map_poly = Polygon(map_vertex_list, True)
 
-coverage_radius = 153
+"""
+The section below calculates the height and coverage radius of the network module on the drone
+"""
+#Parameters for the caclulation:
+wavelength = 0.125
+directivity_transmitter_dBi = 14
+directivity_reciever_dBi = 5
+power_transmitter_dBm = -10
+power_reciever_dBm = -70
+aperature_angle = 60
 
+#convert angle in degrees to radians
+theta = aperature_angle*(np.pi/180)
+
+#calculations
+height = wavelength / (4 * np.pi * 10**((power_reciever_dBm - 
+                                         (power_transmitter_dBm + directivity_transmitter_dBi + 
+                                          directivity_reciever_dBi))/20))
+coverage_radius = int(height * np.tan(theta))
+height = int(height)
+
+#draws appropriate map - make more flexible with different polygons
 def draw_map(map_vertex_list, map_density_list, drone_list):
     
     patches = [map_poly]
@@ -69,15 +94,16 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
     plt.axis('scaled')
     plt.show()
 
+#remakes map_density_list without densities
+map_list = []
+for item in map_density_list:
+    map_list.append(item[0:2])
 
-
-X = np.array([(200,100), (250,250), (400,300), (200,500), (400,500), (200,600), 
-(300,800), (600,200), (700,300), (600,300), (500,400), (800,500), (600,600), (800,800), 
-(300,700), (700,400), (500,100), (700,700), (300,350), (100,100), (600,100)])
-
+#performs clustering
 kmeans = KMeans(n_clusters=7)
-kmeans.fit(X)
+kmeans.fit(map_list)
 
+#checks if *any* user is outside all coverage 
 for cluster in map_density_list:
     mini = 50000
     for center in kmeans.cluster_centers_:
