@@ -24,9 +24,12 @@ This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ub
 From here on out, "DIR" will represent the directory in which it is desired for the package to be installed.
 
 To download the software, run the following in a terminal window:  
-`cd DIR  
+
+```python
+cd DIR  
 git clone https://github.com/nceccarelli/REU-Drone-Swarm-Optimization.git  
-cd REU-Drone-Swarm-Optimization`
+cd REU-Drone-Swarm-Optimization
+```
 
 Now the software should be downloaded and opened in the terminal window.
 
