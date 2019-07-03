@@ -4,9 +4,9 @@
 
 Efficient arrangement of UAVs in a swarm formation is essential to the functioning of such a swarm as a temporary communication network. Such a network could assist in search-and-rescue efforts by providing first responders with a means of communication. We propose a solution to creating a user-friendly and effective system for calculating and visualizing an optimal layout of UAVs to cover a minimum percentage of overall users in a given area. The calculation is computed by a genetic algorithm while the visualization outputs the results of the calculation in an easy-to-comprehend manner. An initial calculation to gather parameter information is followed by the algorithm that generates the optimal solution. This algorithm is run iteratively until a solution is found. Information is passed between iterations to reduce runtime and complexity.
 
-| An example of a UAV that this algorithm can be run for: | This algorithm will output a visual such as this: |
+| An example of a UAV for which this algorithm can be run: | This algorithm will output a visual such as: |
 |---------------------------------------------------------|---------------------------------------------------|
-| <img src="picture_data/drone_from_side.jpg" alt="Oops!" width="400"/> | ![Oops!](picture_data/ex_soln.png?raw=true)
+| <img src="picture_data/drone_from_side.jpg" alt="Oops!" width="500"/> | ![Oops!](picture_data/ex_soln.png?raw=true)
 
 In the picture on the left, users are representad as green, yellow, and red dots, in order of increasing density. Blue dots represent UAVs with the lighter blue circles around each UAV being the coverage they can provide. The large polygon is the specified coveage polygon.
 
@@ -14,7 +14,6 @@ This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ub
 
 **Author:** Nicholas Ceccarelli, njceccarelli@gmail.com  
 **Affiliation:** SUNY University at Buffalo: *Student*; University of Nevada, Reno: *REU Participant*
-<!-- add pictures and explain how it works -->
 
 ## Installation
 
@@ -25,9 +24,29 @@ This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ub
 * numpy
 * shapely
 
+To install Python, run the following command:
+
+**On Linux:**  
+
+```bash
+sudo apt install python3
+```
+
+**On Mac:**
+
+```bash
+brew install python3
+```
+
+To install the other dependencies, run the command:
+
+```bash
+pip3 install matplotlib numpy shapely
+```
+
 ### Building
 
-From here on out, "DIR" will represent the directory in which it is desired for the package to be installed.
+From here on out, "DIR" will represent the path to the directory in which it is desired for the package to be installed, for example "Desktop" or "Desktop/Github_packages".
 
 To download the software, run the following in a terminal window:  
 
@@ -41,25 +60,11 @@ Now the software should be downloaded and opened in the terminal window.
 
 ### Setup
 
-Before use, calculation parameters likely need to be changed. This can be done from within the Python script entitled *Drone_Swarm_Optimizer.py*. To do this, open the file in your favorite IDE or open with vim by running the following in the previous terminal window:
+Before use, calculation parameters likely need to be changed. This can be done from within the Python script entitled *Drone_Swarm_Optimizer.py*. To do this, open the file in your favorite IDE or open with nano by running the following in the previous terminal window:
 
 ```bash
-vim Drone_Swarm_Optimizer.py
+nano Drone_Swarm_Optimizer.py
 ```
-
-If vim has not been installed previously, run the following:  
-
-**On Linux:**  
-
-```bash
-sudo apt install vim
-```  
-
-**On Mac**  
-
-```bash
-brew install vim
-```  
 
 The following parameters pertaining to the overall algorithm may be changed:
 
