@@ -41,9 +41,51 @@ beamwidth = 60
 """
 Nothing below this should be changed by the user
 """
+choice = input("Use pre-existing values? (Y/N): ")
+default = False
+if (choice == 'Y' or choice == 'y'):
+    default = True
+
+if (not default):
+    #Asks user for information and creates lists
+    def make_list():
+        temp_list = []
+        user_input = "default"
+        while (user_input != ['']):
+            user_input = input("Enter Coordinates: ").split(",")
+            if (user_input == ['']): break
+            temp_coord = []
+            for string in user_input:
+                temp_coord.append(int(string))
+            temp = tuple(temp_coord)
+            temp_list.append(temp)
+        return np.array(temp_list)
+
+    # list of "hot spots" 
+    #     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
+    print("Enter user cluster locations in the format: x,y,# of users. \n When finished, leave blank and tap enter.")
+    map_density_list = make_list()
+
+    # Minimum coverage needed to be provided by the algorithm
+    #     Format: decimal (1 = 100% coverage)
+    print("Enter minimum coverage: the minimum percentage of users that must be covered by the network.")
+    min_coverage = int(input("Enter minimum coverage percentage: "))/ 100.0
+
+    #Maximum number of users a single UAV can support at a time
+    print("Enter the maximum number of users that can be provided connectivity by a single UAV.")
+    max_users_per_drone = int(input("Enter maximum number of users per UAV: "))
+
+    #Parameters for the caclulation:
+    print("Enter the following parameters about the network module.")
+    wavelength = float(input("Enter wavelength (in meters): "))
+    directivity_transmitter_dBi = float(input("Enter transmitter directivity (in dBi): "))
+    directivity_reciever_dBi = float(input("Enter reciever directivity (in dBi): "))
+    power_transmitter_dBm = float(input("Enter transmitter power (in dBm): "))
+    power_reciever_dBm = float(input("Enter reciever power (in dBm): "))
+    beamwidth = float(input("Enter beamwidth (in degrees): "))
+
 # The functions below make it easier to understand what information is being retrieved later in the code 
 #     Defines the value to use for max() to get third entity
-
 def get_mult(ent):
     return ent[2]
 #defines the value to use for max() to get second entity

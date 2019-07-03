@@ -11,7 +11,7 @@ Efficient arrangement of UAVs in a swarm formation is essential to the functioni
     </tr>
     <tr>
         <th><img src="picture_data/drone_from_side.jpg" alt="Example UAV" width="500"/></th>
-        <th><img src="picture_data/ex_soln.png" alt="Example Solution"/></th>
+        <th><img src="picture_data/ex_soln.png" alt="Example Solution" width="500◊"/></th>
     </tr>
 </table>
 
@@ -67,7 +67,7 @@ cd REU_Drone_Swarm_Optimization
 
 Now the software should be downloaded and opened in the terminal window.
 
-<h3>Usage</h3>
+<h3>Parameter Definitions</h3>
 
 Before calculation, parameter information needs to be gathered . This can be done by manually changing the values in test_file.py or by GUI prompt in user_file.py. The following informaion needs to be obtained:
 
@@ -113,33 +113,38 @@ Wavelength is represented in meters, directivities are represented in dBi, power
 
 <b><i>All other global variables should not be changed.</b></i>
 
-There are two different ways to use this tool. Users that wish to run the algorithm multiple times with the same or similar paramters, should use test_file.py, which requires manual changing of variables within the script file. If you are not comfortable with that, user_file.py can be used, which will prompt the user for all necessary information within the terminal session.
+<h3>Usage</h3>
 
-<h4>user_file.py</h4>
+There are two different ways to use this tool. When the script is initially run, you will be prompted to use the values already in the python script or to be prompted to enter them wihin the terinal window. Users that wish to run the algorithm multiple times with the same or similar paramters, should manually change the default values within the script and enter "Y". If you are not comfortable with that, "N" should be entered and you will be prompted to enter all necessary information within the terminal session.
+
+<h4>Prompted Information Entry</h4>
 
 You will be prompted for all necessary information within the terminal session. Simply run:
 
 ```bash
-python3 user_file.py
+python3 Drone_Swarm_Optimizer.py
 ```
 
+When the first question appears, enter "N" (without the quotes).
 
 After this line is run, the terminal window will prompt for parameter input, then display the progress of the algorithm. Once finished, the script will print coordinates of UAV locations, and an external window will open with a visualization of the UAVs and users in map_density_list.
 
-<h4>test_file.py</h4>
+<h4>Manual Information Entry</h4>
 
 In this approach, all variables should be changed within the Python file. The variables that should be changed are concentrated in the beginning of the script.
 
 To do this, open the file in your favorite IDE or open with nano by running the following in the previously described terminal window:
 
 ```bash
-nano test_file.py
+nano Drone_Swarm_Optimizer.py
 ```
 
 Once the variables are changed, the script can be run with the command:
 
 ```bash
-python3 test_file.py
+python3 Drone_Swarm_Optimizer.py
 ```
+
+When the first question appears, enter "Y" (without the quotes).
 
 After this line is run, the terminal window will display the progress of the algorithm. Once finished, the script will print coordinates of UAV locations, and an external window will open with a visualization of the UAVs and users in map_density_list.
