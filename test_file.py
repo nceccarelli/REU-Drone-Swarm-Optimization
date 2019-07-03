@@ -13,7 +13,34 @@ import sys
 #for testing
 import time
 
+"""
+Parameters to be changed by user
+"""
 
+# list of "hot spots" 
+#     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
+map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,10), (400,500,10), (200,600,5), 
+(300,800,10), (600,200,15), (700,300,5), (600,300,10), (500,400,10), (800,500,10), (600,600,5), (800,800,10), 
+(300,700,15), (700,400,15), (500,100,15), (700,700,5), (300,350,5), (100,100,15), (600,100,5)])
+
+# Minimum coverage needed to be provided by the algorithm
+#     Format: decimal (1 = 100% coverage)
+min_coverage = 1
+
+#Maximum number of users a single UAV can support at a time
+max_users_per_drone = 250
+
+#Parameters for the caclulation:
+wavelength = 0.125
+directivity_transmitter_dBi = 14
+directivity_reciever_dBi = 5
+power_transmitter_dBm = -10
+power_reciever_dBm = -70
+beamwidth = 60
+
+"""
+Nothing below this should be changed by the user
+"""
 # The functions below make it easier to understand what information is being retrieved later in the code 
 #     Defines the value to use for max() to get third entity
 
@@ -44,13 +71,7 @@ drone_list = []
 #stores the best score currently in the population and the index at which the layout with the best score is located
 best_fitness = (0, -1)
 
-
-# Minimum coverage needed to be provided by the algorithm
-#     Format: decimal (1 = 100% coverage)
-
-min_coverage = 1
-
-#slightly different calculations are used if 100% coverage is needed
+#slightly different calculations are used if 100% coverage is needed - flag for later
 total_coverage_check = False
 if (min_coverage == 1):
     total_coverage_check = True
@@ -61,63 +82,42 @@ num_drones = 1
 #population size for GA
 pop_size = 400
 
+# Mutation rate for GA
+#     Format: decimal (1 = 100% (complete randomness))
+mutation_rate = 0.01
+
 #split ensures sum of 2 sections = whole pop_size on odd numbers
 inherit_between_runs = int(pop_size/2)
 remainder_of_pop = pop_size - inherit_between_runs
 
 #total number of users in the network (set by loop below)
 tot_users = 0
-
-
-# list of "hot spots" 
-#     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
-
-map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,10), (400,500,10), (200,600,5), 
-(300,800,10), (600,200,15), (700,300,5), (600,300,10), (500,400,10), (800,500,10), (600,600,5), (800,800,10), 
-(300,700,15), (700,400,15), (500,100,15), (700,700,5), (300,350,5), (100,100,15), (600,100,5)])
 for (_,_,u) in map_density_list:
     tot_users += u
 
 #fitness to strive for with GA
 optimal_fitness = tot_users * min_coverage
 
-
-# List of vertices in the polygon (in order of drawing)
-#     Also calculates the minimum and maximum x and y values for the polygon
-
-map_vertex_list = np.array([(0,0), (250, 1000), (500, 750), (1000,1000), (750, 0)])
-xmin = get_x(min(map_vertex_list, key=get_x))
-xmax = get_x(max(map_vertex_list, key=get_x))
-ymin = get_y(min(map_vertex_list, key=get_y))
-ymax = get_y(max(map_vertex_list, key=get_y))
-
-
-# Mutation rate for GA
-#     Format: decimal (1 = 100% (complete randomness))
-
-mutation_rate = 0.01
+#calculates the minimum and maximum x and y values for the polygon
+xmin = get_x(min(map_density_list, key=get_x))
+xmax = get_x(max(map_density_list, key=get_x))
+ymin = get_y(min(map_density_list, key=get_y))
+ymax = get_y(max(map_density_list, key=get_y))
 
 #Creates two polygon objects used for later calculations
-map_poly = Polygon(map_vertex_list, True)
+#map_poly = Polygon(map_vertex_list, True)
+map_vertex_list = np.array([(xmin,ymin), (xmin,ymax), (xmax,ymax), (xmax, ymin)])
 shapely_poly = ShapelyPolygon(map_vertex_list)
 
-print("Algorithm Calculation Beginning")
+print("~~~~Algorithm Calculation Beginning~~~~~")
 print("Minimum Coverage:", str(min_coverage * 100) + "%")
 print("Total users in this map:", str(tot_users))
 
 """
 The section below calculates the height and coverage radius of the network module on the drone
 """
-#Parameters for the caclulation:
-wavelength = 0.125
-directivity_transmitter_dBi = 14
-directivity_reciever_dBi = 5
-power_transmitter_dBm = -10
-power_reciever_dBm = -70
-aperature_angle = 60
-
 #convert angle in degrees to radians
-theta = aperature_angle*(np.pi/180)
+theta = beamwidth*(np.pi/180)
 
 #calculations
 height = wavelength / (4 * np.pi * 10**((power_reciever_dBm - 
@@ -125,9 +125,6 @@ height = wavelength / (4 * np.pi * 10**((power_reciever_dBm -
                                           directivity_reciever_dBi))/20))
 coverage_radius = int(height * np.tan(theta))
 height = int(height)
-
-#Maximum number of users a single UAV can support at a time
-max_users_per_drone = 250
 
 print("Height:", str(height), "meters")
 print("Coverage Radius:", str(coverage_radius), "meters")
@@ -140,11 +137,10 @@ def polygon_contains_point(point):
     point_to_check = ShapelyPoint(get_x(point), get_y(point))
     return shapely_poly.contains(point_to_check)
 
-
 #draws appropriate map - make more flexible with different polygons
-def draw_map(map_vertex_list, map_density_list, drone_list):
+def draw_map(map_density_list, drone_list):
     
-    patches = [map_poly]
+    patches = []
     
     max_mult = get_mult(max(map_density_list, key=get_mult))
     #handle drone selection circles
@@ -166,15 +162,12 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
         elif (m/max_mult <= 2/3):
             plt.scatter(x, y, c='y')
         else:
-            plt.scatter(x, y, c='r')
-            
+            plt.scatter(x, y, c='r')    
             
     plt.axis([xmin-10,xmax+10,ymin-10,ymax+10])
     plt.axis('scaled')
     plt.show()
     
-#    
-#draw_map(map_vertex_list, map_density_list, drone_list)
 """
 GA SETUP
 """
@@ -214,7 +207,6 @@ def setup_intermediate():
             while (not polygon_contains_point(add_to_pop)):
                 add_to_pop = (np.random.randint(xmin, xmax), np.random.randint(ymin,ymax))
             temp_pop.append(add_to_pop)
-
         population.append(temp_pop)
     np.random.shuffle(population)
 
@@ -233,14 +225,11 @@ def fitness():
         score = 0
         cluster_exclusion_list = []
         for drone in proposed_map:
-        
-
             users_per_drone = 0
             for (x, y, m) in map_density_list:
                 hot_spot = (x, y, m)
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
                 if ((dist <= coverage_radius) and (hot_spot not in cluster_exclusion_list)):
-                    
                     if (total_coverage_check):
                         adj_population.append(proposed_map)
                     else:
@@ -270,9 +259,8 @@ def draw(adj_population):
         for m in range(num_drones):
             rand1 = np.random.randint(0, len(adj_population))
             rand2 = np.random.randint(0, len(adj_population))
-            
             if (mutation_check == 1/mutation_rate):
-                sys.stdout.write('.')
+                sys.stdout.write('~')
                 sys.stdout.flush()
                 mut_rand = np.random.randint(0,2)
                 if (mut_rand == 0):
@@ -298,7 +286,7 @@ def illustrate_final():
     for tup in list_:
         print("(" + str(tup[0]) + "," + str(tup[1]) + "," + str(tup[2]) + ")")
     #illustrate solution
-    draw_map(map_vertex_list, map_density_list, drone_list)
+    draw_map(map_density_list, drone_list)
 
 #displays intermediate results (failures)
 def illustrate_intermediate():
@@ -310,14 +298,11 @@ def illustrate_intermediate():
         print("\n" + str(num_drones), "drones failed | Best fitness:", str(get_best_score(best_fitness)/optimal_fitness * 100), '%',
               "\n\nContinuing with", str(num_drones+1), "drones")
 
-
 """
 Control loop for GA
 """
-
 # optimize: instead of max iterations, use for how many generations the fitness stays the same 
 #     if score stays the same for 50 iterations, move on
-
 
 #for testing
 start_time = time.time()

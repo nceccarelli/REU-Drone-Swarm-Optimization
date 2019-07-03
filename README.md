@@ -15,7 +15,7 @@ Efficient arrangement of UAVs in a swarm formation is essential to the functioni
     </tr>
 </table>
 
-In the picture on the left, users are representad as green, yellow, and red dots, in order of increasing density. Blue dots represent UAVs with the lighter blue circles around each UAV being the coverage they can provide. The large polygon is the specified coveage polygon.
+In the picture on the left, users are representad as green, yellow, and red dots, in order of increasing density. Blue dots represent UAVs with the lighter blue circles around each UAV being the coverage they can provide. 
 
 This project has been tested using Python 3.7 on Mac OS X Version 10.14.5 and Ubuntu 18.04.
 
@@ -67,20 +67,13 @@ cd REU_Drone_Swarm_Optimization
 
 Now the software should be downloaded and opened in the terminal window.
 
-<h3>Setup</h3>
+<h3>Usage</h3>
 
-Before use, calculation parameters likely need to be changed. This can be done from within the Python script entitled *Drone_Swarm_Optimizer.py*. To do this, open the file in your favorite IDE or open with nano by running the following in the previous terminal window:
-
-```bash
-nano Drone_Swarm_Optimizer.py
-```
-
-The following parameters pertaining to the overall algorithm may be changed:
+Before calculation, parameter information needs to be gathered . This can be done by manually changing the values in test_file.py or by GUI prompt in user_file.py. The following informaion needs to be obtained:
 
 <ul>
     <li>min_coverage</li>
     <li>map_density_list</li>
-    <li>map_vertex_list</li>
     <li>max_users_per_drone</li>
 </ul>
 
@@ -100,10 +93,6 @@ The following table defines the above parameters:
         <td>The map density list - A list of all user clusters in the form of (x, y, number of users).</td>
     </tr>
     <tr>
-        <td>map_vertex_list</td>
-        <td>The coordinates of the vertices of the outside of the surrounding polygon in the form of (x,y).</td>
-    </tr>
-    <tr>
         <td>max_users_per_drone</td>
         <td>The maximum number of users that can be provided coverage by a single UAV.</td>
     </tr>
@@ -117,21 +106,40 @@ The following parameters pertaining to network calculations may be changed:
     <li>directivity_reciever_dBi</li>
     <li>power_transmitter_dBm</li>
     <li>power_reciever_dBm</li>
-    <li>aperature_angle</li>
+    <li>beamwidth</li>
 </ul>
 
-The above parameters are specific to the network modules specifications.
-
-Wavelength is represented in meters, directivities are represented in dBi, powers are represented in dBm, and aperature angle is represented in degrees.
+Wavelength is represented in meters, directivities are represented in dBi, powers are represented in dBm, and beamwidth is represented in degrees.
 
 <b><i>All other global variables should not be changed.</b></i>
 
-<h3>Execution</h3>
+There are two different ways to use this tool. Users that wish to run the algorithm multiple times with the same or similar paramters, should use test_file.py, which requires manual changing of variables within the script file. If you are not comfortable with that, user_file.py can be used, which will prompt the user for all necessary information within the terminal session.
 
-Once all appropriate parameters are changed, the algorithm can be run. To do so, in the previously described terminal window, run the following:
+<h4>user_file.py</h4>
+
+You will be prompted for all necessary information within the terminal session. Simply run:
 
 ```bash
-python3 Drone_Swarm_Optimizer.py
+python3 user_file.py
 ```
 
-After this line is run, the terminal window will display the progress of the algorithm. Once finished, the script will print coordinates of UAV locations, and an external window will open with a visualization of the UAVs and users in map_density_list within the polygon depicted by map_vertex_list.
+
+After this line is run, the terminal window will prompt for parameter input, then display the progress of the algorithm. Once finished, the script will print coordinates of UAV locations, and an external window will open with a visualization of the UAVs and users in map_density_list.
+
+<h4>test_file.py</h4>
+
+In this approach, all variables should be changed within the Python file. The variables that should be changed are concentrated in the beginning of the script.
+
+To do this, open the file in your favorite IDE or open with nano by running the following in the previously described terminal window:
+
+```bash
+nano test_file.py
+```
+
+Once the variables are changed, the script can be run with the command:
+
+```bash
+python3 test_file.py
+```
+
+After this line is run, the terminal window will display the progress of the algorithm. Once finished, the script will print coordinates of UAV locations, and an external window will open with a visualization of the UAVs and users in map_density_list.
