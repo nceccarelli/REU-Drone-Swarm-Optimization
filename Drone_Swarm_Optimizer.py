@@ -147,7 +147,8 @@ if (len(map_density_list) > 0):
     ymin = get_y(min(map_density_list, key=get_y))
     ymax = get_y(max(map_density_list, key=get_y))
 else:
-    sys.exit("No map to create: no users on map.")
+    print("No map to create: no users on map.")
+    exit(0)
 
 
 #Creates two polygon objects used for later calculations
