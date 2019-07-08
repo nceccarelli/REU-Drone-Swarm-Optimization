@@ -2,7 +2,7 @@
 
 <h2>Overview</h2>
 
-Efficient arrangement of UAVs in a swarm formation is essential to the functioning of such a swarm as a temporary communication network. Such a network could assist in search-and-rescue efforts by providing first responders with a means of communication. We propose a solution to creating a user-friendly and effective system for calculating and visualizing an optimal layout of UAVs to cover a minimum percentage of overall users in a given area. The calculation is computed by a genetic algorithm while the visualization outputs the results of the calculation in an easy-to-comprehend manner. An initial calculation to gather parameter information is followed by the algorithm that generates the optimal solution. This algorithm is run iteratively until a solution is found. Information is passed between iterations to reduce runtime and complexity.
+Efficient arrangement of UAVs (Unmanned Aerial Vehicles) in a swarm formation is essential to the functioning of such a swarm as a temporary communication network. Such a network could assist in search-and-rescue efforts by providing first responders with a means of communication. We propose a solution to creating a user-friendly and effective system for calculating and visualizing an optimal layout of UAVs to cover a minimum percentage of overall users in a given area. The calculation is computed by a genetic algorithm while the visualization outputs the results of the calculation in an easy-to-comprehend manner. An initial calculation to gather parameter information is followed by the algorithm that generates the optimal solution. This algorithm is run iteratively until a solution is found. Information is passed between iterations to reduce runtime and complexity.
 
 <table style="width:100%;">
     <tr>
@@ -115,7 +115,7 @@ Wavelength is represented in meters, directivities are represented in dBi, power
 
 <h3>Usage</h3>
 
-There are two different ways to use this tool. When the script is initially run, you will be prompted to use the values already in the python script or to be prompted to enter them wihin the terinal window. Users that wish to run the algorithm multiple times with the same or similar paramters, should manually change the default values within the script and enter "Y". If you are not comfortable with that, "N" should be entered and you will be prompted to enter all necessary information within the terminal session.
+There are two different ways to use this tool. When the script is run initially, you will be prompted to use the values already in the python script or will be prompted to enter them within the terminal window. Users that wish to run the algorithm multiple times with the same or similar parameters, should manually change the default values within the script and enter "Y". If you are not comfortable with that, "N" should be entered and you will be prompted to enter all necessary information within the terminal session.
 
 <h4>Prompted Information Entry</h4>
 

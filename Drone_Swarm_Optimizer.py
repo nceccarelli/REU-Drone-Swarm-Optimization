@@ -141,10 +141,14 @@ for (_,_,u) in map_density_list:
 optimal_fitness = tot_users * min_coverage
 
 #calculates the minimum and maximum x and y values for the polygon
-xmin = get_x(min(map_density_list, key=get_x))
-xmax = get_x(max(map_density_list, key=get_x))
-ymin = get_y(min(map_density_list, key=get_y))
-ymax = get_y(max(map_density_list, key=get_y))
+if (len(map_density_list) > 0):
+    xmin = get_x(min(map_density_list, key=get_x))
+    xmax = get_x(max(map_density_list, key=get_x))
+    ymin = get_y(min(map_density_list, key=get_y))
+    ymax = get_y(max(map_density_list, key=get_y))
+else:
+    sys.exit("No map to create: no users on map.")
+
 
 #Creates two polygon objects used for later calculations
 #map_poly = Polygon(map_vertex_list, True)
@@ -217,9 +221,20 @@ GA SETUP
 for _ in range(pop_size):
     temp_pop = []
     for _ in range(num_drones):
-        add_to_pop = (np.random.randint(xmin, xmax), np.random.randint(ymin,ymax))
-        while (not polygon_contains_point(add_to_pop)):
+        if (xmax == xmin and ymin == ymax):
+            add_to_pop = (xmin,ymin)
+        elif (xmax == xmin):
+            add_to_pop = (xmin, np.random.randint(ymin,ymax))
+            while (not polygon_contains_point(add_to_pop)):
+                add_to_pop = (xmin, np.random.randint(ymin,ymax))
+        elif (ymax == ymin):
+            add_to_pop = (np.random.randint(xmin, xmax), ymin)
+            while (not polygon_contains_point(add_to_pop)):
+                add_to_pop = (np.random.randint(xmin, xmax), ymin)
+        else: 
             add_to_pop = (np.random.randint(xmin, xmax), np.random.randint(ymin,ymax))
+            while (not polygon_contains_point(add_to_pop)):
+                add_to_pop = (np.random.randint(xmin, xmax), np.random.randint(ymin,ymax))
         temp_pop.append(add_to_pop)
 
     population.append(temp_pop)
@@ -234,9 +249,20 @@ def setup_intermediate():
     
     #fill some of the population with the winning entry from before
     for _ in range(inherit_between_runs):
-        append = (np.random.randint(xmin, xmax), np.random.randint(ymin,ymax))
-        while (not polygon_contains_point(append)):
+        if (xmax == xmin and ymax == ymin):
+            append = (xmin, ymin)
+        elif (xmax == xmin):
+            append = (xmin, np.random.randint(ymin,ymax))
+            while (not polygon_contains_point(add_to_pop)):
+                append = (xmin, np.random.randint(ymin,ymax))
+        elif (ymax == ymin):
+            append = (np.random.randint(xmin, xmax), ymin)
+            while (not polygon_contains_point(add_to_pop)):
+                append = (np.random.randint(xmin, xmax), ymin)
+        else:
             append = (np.random.randint(xmin, xmax), np.random.randint(ymin,ymax))
+            while (not polygon_contains_point(append)):
+                append = (np.random.randint(xmin, xmax), np.random.randint(ymin,ymax))
         temp = add_to_pop.copy()
         temp.append(append)
         population.append(temp)
