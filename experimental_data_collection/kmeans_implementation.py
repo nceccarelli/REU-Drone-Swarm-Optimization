@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Circle, Polygon
 import sys
+import time
 
 # The functions below make it easier to understand what information is being retrieved later in the code 
 #     Defines the value to use for max() to get third entity
@@ -24,22 +25,23 @@ def get_best_score(ent):
 def get_best_index(ent):
     return ent[1]
 
-# List of vertices in the polygon (in order of drawing)
-#     Also calculates the minimum and maximum x and y values for the polygon
-map_vertex_list = np.array([(0,0), (250, 1000), (500, 750), (1000,1000), (750, 0)])
-xmin = get_x(min(map_vertex_list, key=get_x))
-xmax = get_x(max(map_vertex_list, key=get_x))
-ymin = get_y(min(map_vertex_list, key=get_y))
-ymax = get_y(max(map_vertex_list, key=get_y))
 
 # list of "hot spots" 
 #     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
-map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,10), (400,500,10), (200,600,5), 
-(300,800,10), (600,200,15), (700,300,5), (600,300,10), (500,400,10), (800,500,10), (600,600,5), (800,800,10), 
-(300,700,15), (700,400,15), (500,100,15), (700,700,5), (300,350,5), (100,100,15), (600,100,5)])
+#     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
+map_density_list = np.array([(773,585,5),(581,207,10),(738,685,5), (844,236,10),(1610,457,15),(1800,15,10),(992,153,5),
+(1593,975,10),(1195,948,5),(1868,301,10),(1944,158,10),(1169,793,10),(287,8,5),(1429,56,15)])
+
+# List of vertices in the polygon (in order of drawing)
+#     Also calculates the minimum and maximum x and y values for the polygon
+xmin = get_x(min(map_density_list, key=get_x))
+xmax = get_x(max(map_density_list, key=get_x))
+ymin = get_y(min(map_density_list, key=get_y))
+ymax = get_y(max(map_density_list, key=get_y))
+
 
 #Creates a polygon object used for later calculations
-map_poly = Polygon(map_vertex_list, True)
+#map_poly = Polygon(map_vertex_list, True)
 
 """
 The section below calculates the height and coverage radius of the network module on the drone
@@ -63,9 +65,9 @@ coverage_radius = int(height * np.tan(theta))
 height = int(height)
 
 #draws appropriate map - make more flexible with different polygons
-def draw_map(map_vertex_list, map_density_list, drone_list):
+def draw_map(map_density_list, drone_list):
     
-    patches = [map_poly]
+    patches = []
     
     max_mult = get_mult(max(map_density_list, key=get_mult))
     #handle drone selection circles
@@ -87,20 +89,20 @@ def draw_map(map_vertex_list, map_density_list, drone_list):
         elif (m/max_mult <= 2/3):
             plt.scatter(x, y, c='y')
         else:
-            plt.scatter(x, y, c='r')
-            
+            plt.scatter(x, y, c='r')    
             
     plt.axis([xmin-10,xmax+10,ymin-10,ymax+10])
     plt.axis('scaled')
     plt.show()
 
+start_time = time.time()
 #remakes map_density_list without densities
 map_list = []
 for item in map_density_list:
     map_list.append(item[0:2])
 
 #performs clustering
-kmeans = KMeans(n_clusters=7)
+kmeans = KMeans(n_clusters=9)
 kmeans.fit(map_list)
 
 #checks if *any* user is outside all coverage 
@@ -111,9 +113,11 @@ for cluster in map_density_list:
         if (dist < mini):
             mini = dist
     if (mini > coverage_radius):
+        print("FAILFAILFAILFAIFLAIFLALILFAIFAILFAILFAILFAILFAIL")
         sys.exit()
 
 #Display options
 #print(kmeans.cluster_centers_)
-#draw_map(map_vertex_list, map_density_list, kmeans.cluster_centers_)
+print('\nThe algorithm took', time.time()-start_time, 'seconds.')
+draw_map(map_density_list, kmeans.cluster_centers_)
 print("success")
