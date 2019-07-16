@@ -140,7 +140,7 @@ for (_,_,u) in map_density_list:
     tot_users += u
 
 #fitness to strive for with GA
-optimal_fitness = 15000
+optimal_fitness = 14000
 
 #calculates the minimum and maximum x and y values for the polygon
 if (len(map_density_list) > 0):
