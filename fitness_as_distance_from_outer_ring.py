@@ -140,7 +140,7 @@ for (_,_,u) in map_density_list:
     tot_users += u
 
 #fitness to strive for with GA
-optimal_fitness = 1
+optimal_fitness = 15000
 
 #calculates the minimum and maximum x and y values for the polygon
 if (len(map_density_list) > 0):
@@ -150,7 +150,7 @@ if (len(map_density_list) > 0):
     ymax = get_y(max(map_density_list, key=get_y))
 else:
     print("No map to create: no users on map.")
-    exit(0)
+    exit()
 
 
 #Creates two polygon objects used for later calculations
@@ -294,23 +294,40 @@ def fitness():
     adj_population = []
     index = -1
     for proposed_map in population:
-        distance_sum = 0
+        score = 0
+  
         cluster_exclusion_list = []
         for drone in proposed_map:
+            distance_sum = 0
             users_per_drone = 0
             for (x,y,m) in map_density_list:
                 hot_spot = (x,y,m)
-                dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
+
+                diff1 = get_x(hot_spot) - get_x(drone)
+                if (diff1 < 0):
+                    diff1 += coverage_radius
+                else: 
+                    diff1 -= coverage_radius
+                
+                diff2 = get_y(hot_spot) - get_y(drone)
+                if (diff2 < 0): 
+                    diff2 += coverage_radius
+                else: 
+                    diff2 -=coverage_radius
+                dist = np.sqrt(diff1**2 + diff2**2)
+
+                #dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
                 if (dist <= coverage_radius and hot_spot not in cluster_exclusion_list and users_per_drone + get_mult(hot_spot) <= max_users_per_drone):
-                    distance_sum += (dist)
+                    distance_sum += dist
                     cluster_exclusion_list.append(hot_spot)
                     users_per_drone += get_mult(hot_spot)
+                    if (math.floor(distance_sum) != 0):
+                        for _ in range(math.floor(5000/distance_sum)):
+                            adj_population.append(proposed_map)
+                    score += distance_sum
+        if (score > get_best_score(best_fitness)):
+            best_fitness = (score, index)
         index += 1
-        print(distance_sum)
-        for _ in range(math.floor(distance_sum)):
-            adj_population.append(proposed_map)
-        if (distance_sum < get_best_score(best_fitness)):
-            best_fitness = (distance_sum, index)
     return adj_population
 
 
@@ -388,7 +405,7 @@ while(get_best_score(best_fitness) < optimal_fitness):
         prev_fitness = math.floor(get_best_score(best_fitness)/100)
         draw(fit)
         fit = fitness()
-        #print(get_best_score(best_fitness))
+        print(get_best_score(best_fitness))
         if (math.floor(get_best_score(best_fitness)/100) == prev_fitness):
             same_fitness_count += 1
         else:

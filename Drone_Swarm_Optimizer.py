@@ -298,13 +298,12 @@ def fitness():
                 hot_spot = (x, y, m)
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
                 if ((dist <= coverage_radius) and (hot_spot not in cluster_exclusion_list)):
-                    if (total_coverage_check):
-                        adj_population.append(proposed_map)
-                    else:
-                        for _ in range(get_mult(hot_spot)):
-                            adj_population.append(proposed_map)
-                    
                     if (users_per_drone + get_mult(hot_spot) <= max_users_per_drone):
+                        if (total_coverage_check):
+                            adj_population.append(proposed_map)
+                        else:
+                            for _ in range(get_mult(hot_spot)):
+                                adj_population.append(proposed_map)
                         cluster_exclusion_list.append(hot_spot)
                         score += get_mult(hot_spot)
                         users_per_drone += get_mult(hot_spot)
