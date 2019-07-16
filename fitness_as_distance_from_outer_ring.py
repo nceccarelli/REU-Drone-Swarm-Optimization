@@ -10,6 +10,8 @@ from shapely.geometry import Point as ShapelyPoint
 from shapely.geometry.polygon import Polygon as ShapelyPolygon
 import sys
 
+import math
+
 #for testing
 import time
 
@@ -138,7 +140,7 @@ for (_,_,u) in map_density_list:
     tot_users += u
 
 #fitness to strive for with GA
-optimal_fitness = tot_users * min_coverage
+optimal_fitness = 1
 
 #calculates the minimum and maximum x and y values for the polygon
 if (len(map_density_list) > 0):
@@ -285,34 +287,32 @@ def setup_intermediate():
 
 # create new data structure with the number of entries equivalent to the fitness
 #     fitness is defined as the number of users covered under a given map
+
+#based on 
 def fitness():
     global best_fitness, population
     adj_population = []
     index = -1
     for proposed_map in population:
-        score = 0
+        distance_sum = 0
         cluster_exclusion_list = []
         for drone in proposed_map:
             users_per_drone = 0
-            for (x, y, m) in map_density_list:
-                hot_spot = (x, y, m)
+            for (x,y,m) in map_density_list:
+                hot_spot = (x,y,m)
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
-                if ((dist <= coverage_radius) and (hot_spot not in cluster_exclusion_list)):
-                    if (total_coverage_check):
-                        adj_population.append(proposed_map)
-                    else:
-                        for _ in range(get_mult(hot_spot)):
-                            adj_population.append(proposed_map)
-                    
-                    if (users_per_drone + get_mult(hot_spot) <= max_users_per_drone):
-                        cluster_exclusion_list.append(hot_spot)
-                        score += get_mult(hot_spot)
-                        users_per_drone += get_mult(hot_spot)
-                    
+                if (dist <= coverage_radius and hot_spot not in cluster_exclusion_list and users_per_drone + get_mult(hot_spot) <= max_users_per_drone):
+                    distance_sum += (dist)
+                    cluster_exclusion_list.append(hot_spot)
+                    users_per_drone += get_mult(hot_spot)
         index += 1
-        if (score >= get_best_score(best_fitness)):
-            best_fitness = (score, index)
+        print(distance_sum)
+        for _ in range(math.floor(distance_sum)):
+            adj_population.append(proposed_map)
+        if (distance_sum < get_best_score(best_fitness)):
+            best_fitness = (distance_sum, index)
     return adj_population
+
 
 # Computes the next generation for the GA
 #     also handles mutation
@@ -375,6 +375,7 @@ start_time = time.time()
 
 intermediate = False
 
+it=0
 while(get_best_score(best_fitness) < optimal_fitness):
     if (intermediate):
         setup_intermediate()
@@ -384,15 +385,18 @@ while(get_best_score(best_fitness) < optimal_fitness):
     #allows for more iterations for harder solutions
     calc_limit = int(num_drones * len(map_density_list) /2)
     while(get_best_score(best_fitness) < optimal_fitness and same_fitness_count < calc_limit):
-        prev_fitness = get_best_score(best_fitness)
+        prev_fitness = math.floor(get_best_score(best_fitness)/100)
         draw(fit)
         fit = fitness()
-        if (get_best_score(best_fitness) == prev_fitness):
+        #print(get_best_score(best_fitness))
+        if (math.floor(get_best_score(best_fitness)/100) == prev_fitness):
             same_fitness_count += 1
         else:
             same_fitness_score = 0
     if (get_best_score(best_fitness) < optimal_fitness):
         illustrate_intermediate()
+        if (it == 5 or it == 10):
+            illustrate_final()
     num_drones += 1
     intermediate = True
 
