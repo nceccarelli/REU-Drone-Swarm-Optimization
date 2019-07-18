@@ -348,10 +348,13 @@ def illustrate_final():
     list_ = [list(elem) for elem in population[get_best_index(best_fitness)]]
     for tup in list_:
         tup.append(height)
-    print("\nBest fitness: " + str(get_best_score(best_fitness)) + " \nProposed Map: ")
+    print("\nBest fitness: " + str(get_best_score(best_fitness)) + " \n\nProposed Map: ")
 
     for tup in list_:
         print("(" + str(tup[0]) + "," + str(tup[1]) + "," + str(tup[2]) + ")")
+    print("\nSearch Area Constraints:")
+    for tup in map_vertex_list:
+        print("(" + str(tup[0]) + "," + str(tup[1]) + ")")
     #illustrate solution
     draw_map(map_density_list, drone_list)
 
