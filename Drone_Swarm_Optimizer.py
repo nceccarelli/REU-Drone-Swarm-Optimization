@@ -150,10 +150,12 @@ else:
     print("No map to create: no users on map.")
     exit(0)
 
+#Creates a minimal square around the data
+map_vertex_list = np.array([(xmin,ymin), (xmin,ymax), (xmax,ymax), (xmax, ymin)])
 
 #Creates two polygon objects used for later calculations
-#map_poly = Polygon(map_vertex_list, True)
-map_vertex_list = np.array([(xmin,ymin), (xmin,ymax), (xmax,ymax), (xmax, ymin)])
+map_poly = Polygon(map_vertex_list, True)
+
 shapely_poly = ShapelyPolygon(map_vertex_list)
 
 print("~~~~Algorithm Calculation Beginning~~~~~")
@@ -186,8 +188,8 @@ def polygon_contains_point(point):
 
 #draws appropriate map - make more flexible with different polygons
 def draw_map(map_density_list, drone_list):
-    
-    patches = []
+    global map_poly
+    patches = [map_poly]
     
     max_mult = get_mult(max(map_density_list, key=get_mult))
     #handle drone selection circles
