@@ -10,8 +10,8 @@ Efficient arrangement of UAVs (Unmanned Aerial Vehicles) in a swarm formation is
         <th>This algorithm will output a visual such as:</th>
     </tr>
     <tr>
-        <th><img src="picture_data/drone_from_side.jpg" alt="Example UAV" width="500"/></th>
-        <th><img src="picture_data/ex_soln.png" alt="Example Solution" width="500◊"/></th>
+        <th><img src="writing_supplements/drone_from_side.jpg" alt="Example UAV" width="500"/></th>
+        <th><img src="writing_supplements/ex_soln.png" alt="Example Solution" width="500◊"/></th>
     </tr>
 </table>
 

@@ -28,7 +28,7 @@ map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,1
 min_coverage = 1
 
 #Maximum number of users a single UAV can support at a time
-max_bandwidth = 10
+max_bandwidth = 250
 
 #Parameters for the caclulation:
 wavelength = 0.125
