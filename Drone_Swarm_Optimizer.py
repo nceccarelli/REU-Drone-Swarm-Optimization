@@ -28,7 +28,7 @@ map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,1
 min_coverage = 1
 
 #Maximum number of users a single UAV can support at a time
-max_users_per_drone = 250
+max_bandwidth = 10
 
 #Parameters for the caclulation:
 wavelength = 0.125
@@ -72,8 +72,8 @@ if (not default):
     min_coverage = int(input("Enter minimum coverage percentage: "))/ 100.0
 
     #Maximum number of users a single UAV can support at a time
-    print("Enter the maximum number of users that can be provided connectivity by a single UAV.")
-    max_users_per_drone = int(input("Enter maximum number of users per UAV: "))
+    print("Enter the maximum bandwidth that can be provided by a single UAV.")
+    max_bandwidth = int(input("Enter bandwidth per UAV: "))
 
     #Parameters for the caclulation:
     print("Enter the following parameters about the network module.")
@@ -155,7 +155,6 @@ map_vertex_list = np.array([(xmin,ymin), (xmin,ymax), (xmax,ymax), (xmax, ymin)]
 
 #Creates two polygon objects used for later calculations
 map_poly = Polygon(map_vertex_list, True)
-
 shapely_poly = ShapelyPolygon(map_vertex_list)
 
 print("~~~~Algorithm Calculation Beginning~~~~~")
@@ -295,12 +294,12 @@ def fitness():
         score = 0
         cluster_exclusion_list = []
         for drone in proposed_map:
-            users_per_drone = 0
+            drone_bandwidth = 0
             for (x, y, m) in map_density_list:
                 hot_spot = (x, y, m)
                 dist = np.sqrt((get_x(hot_spot)-get_x(drone))**2 + (get_y(hot_spot)-get_y(drone))**2)
                 if ((dist <= coverage_radius) and (hot_spot not in cluster_exclusion_list)):
-                    if (users_per_drone + get_mult(hot_spot) <= max_users_per_drone):
+                    if (drone_bandwidth + get_mult(hot_spot) <= max_bandwidth):
                         if (total_coverage_check):
                             adj_population.append(proposed_map)
                         else:
@@ -308,7 +307,7 @@ def fitness():
                                 adj_population.append(proposed_map)
                         cluster_exclusion_list.append(hot_spot)
                         score += get_mult(hot_spot)
-                        users_per_drone += get_mult(hot_spot)
+                        drone_bandwidth += get_mult(hot_spot)
                     
         index += 1
         if (score >= get_best_score(best_fitness)):
