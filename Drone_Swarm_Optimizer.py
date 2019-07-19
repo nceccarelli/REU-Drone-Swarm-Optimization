@@ -18,7 +18,7 @@ Parameters to be changed by user
 """
 
 # list of "hot spots" 
-#     Format: (x coordinate, y coordinate, multiplicity - number of users at that location)
+#     Format: (x coordinate, y coordinate, bandwidth need (Mbps) - number of users at that location)
 map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,10), (400,500,10), (200,600,5), 
 (300,800,10), (600,200,15), (700,300,5), (600,300,10), (500,400,10), (800,500,10), (600,600,5), (800,800,10), 
 (300,700,15), (700,400,15), (500,100,15), (700,700,5), (300,350,5), (100,100,15), (600,100,5)])
@@ -28,7 +28,7 @@ map_density_list = np.array([(200,100,5), (250,250,10), (400,300,10), (200,500,1
 min_coverage = 1
 
 #Maximum number of users a single UAV can support at a time
-max_bandwidth = 250
+max_bandwidth = 300 #Mbps
 
 #Parameters for the caclulation:
 wavelength = 0.125
