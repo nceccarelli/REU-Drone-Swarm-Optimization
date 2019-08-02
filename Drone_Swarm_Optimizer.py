@@ -217,7 +217,11 @@ def draw_map(map_density_list, drone_list):
             
     plt.axis([xmin-10,xmax+10,ymin-10,ymax+10])
     plt.axis('scaled')
+    
+    #option to save visualization
+    #plt.savefig('output.svg', format='svg', dpi=1000)
     plt.show()
+    
     
 """
 GA SETUP
@@ -359,6 +363,7 @@ def illustrate_final():
         print("(" + str(tup[0]) + "," + str(tup[1]) + ")")
     #illustrate solution
     draw_map(map_density_list, drone_list)
+    
 
 #displays intermediate results (failures)
 def illustrate_intermediate():
